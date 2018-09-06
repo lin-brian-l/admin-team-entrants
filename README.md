@@ -1,0 +1,1 @@
+This repository is a plugin designed for showing team members within the backend of Smash.gg's admin panel under the "brackets and seeding" page. 
