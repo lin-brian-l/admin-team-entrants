@@ -28,21 +28,27 @@ const getTourneyData = () => {
 
 const makeCorsRequest = (url) => {
 	return new Promise((resolve, reject) => {
-		const xhr = new XMLHttpRequest();
-		xhr.onreadystatechange = (e) => {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          resolve(xhr.response);
-        } else {
-          reject(xhr.status);
-        }
-      }
-    }
-    xhr.ontimeout = () => {
-      reject('timeout');
-    }
-    xhr.open('get', url, true);
-    xhr.send();
+		$.ajax({
+			url: url,
+		}).done(response => {
+			resolve(response);
+		})
+
+		// const xhr = new XMLHttpRequest();
+		// xhr.onreadystatechange = (e) => {
+  //     if (xhr.readyState === 4) {
+  //       if (xhr.status === 200) {
+  //         resolve(xhr.response);
+  //       } else {
+  //         reject(xhr.status);
+  //       }
+  //     }
+  //   }
+  //   xhr.ontimeout = () => {
+  //     reject('timeout');
+  //   }
+  //   xhr.open('get', url, true);
+  //   xhr.send();
 	})
 }
 

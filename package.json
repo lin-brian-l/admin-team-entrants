@@ -1,0 +1,22 @@
+{
+  "name": "admin-team-entrants",
+  "version": "1.0.0",
+  "description": "This repository is a plugin designed for showing team members within the backend of Smash.gg's admin panel under the \"brackets and seeding\" page.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lin-brian-l/admin-team-entrants.git"
+  },
+  "author": "Brian Lin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lin-brian-l/admin-team-entrants/issues"
+  },
+  "homepage": "https://github.com/lin-brian-l/admin-team-entrants#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
