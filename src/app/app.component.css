@@ -7,10 +7,38 @@
     color: green;
 }
 
-.form-container {
+.form {
     background-color: blue;
+    text-align: center;
 }
 
-.form {
+.form__input {
+    width: 70%;
+}
+
+.form__submit-button {
+    width: 10%;
+}
+
+.teams-container {
     background-color: green;
+}
+
+.teams-table {
+    margin: auto;
+    border: 2px solid black;
+}
+
+.teams-table__head {
+    padding: 10px 0px;
+    width: 25%;
+}
+
+.teams-table__rows {
+    text-align: center;
+}
+
+.teams-table, .teams-table__head, .teams-table__cell {
+    border: 2px solid black;
+    border-collapse: collapse;
 }

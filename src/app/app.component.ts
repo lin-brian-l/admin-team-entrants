@@ -25,40 +25,26 @@ interface ITeam {
 })
 export class AppComponent {
 	tournamentUrl: string;
+	tournamentTeams: ITeam[];
 
 	constructor(
 		private http: HttpClient
-	) {}
+	) {
+		this.tournamentUrl = "https://smash.gg/admin/tournament/api-testing/seeding/210415/389726";
+	}
 
 	onTournamentUrlChange(value) {
 		this.tournamentUrl = value;
 	}
 
-	submitUrl(): void {
-		// console.log(`button was hit: ${this.tournamentUrl}`);
+	async submitUrl() {
 		const tournamentData: ITournamentData = this.parseTournamentData(this.tournamentUrl);
-		console.log(`url is https://cors-anywhere.herokuapp.com/https://api.smash.gg/tournament/${tournamentData.name}?expand[]=phase&expand[]=groups&expand[]=event&expand[]=participant`);
-		this.http.get(`https://cors-anywhere.herokuapp.com/https://api.smash.gg/tournament/${tournamentData.name}?expand[]=phase&expand[]=groups&expand[]=event&expand[]=participant`)
-		.subscribe((data: any) => {
 
-			/*
-				1) Grab array of participants
-				2) Go to event url (https://api.smash.gg/event/210415?expand[]=entrants&expand[]=participants&expand=entrants) and grab array of entrants
-				3) Map team array using array of entrants 
-			*/
+		const tournamentUrl: string = `https://cors-anywhere.herokuapp.com/https://api.smash.gg/tournament/${tournamentData.name}?expand[]=participants`;
+		const tournamentParticipants: IParticipant[] = await this.getTournamentParticipants(tournamentUrl);
 
-			// console.log(data.entities.groups);
-			// let groupIds: number[] = data.entities.groups
-			// .filter((group: any) => {
-			// 	return group.phaseId == tournamentData.phaseId;
-			// }).map((group: any) => {
-			// 	return group.id;
-			// })
-			
-			// const teamObjsgroupIds.forEach((groupId: number) => {
-			// 	this.getGroupInfo(groupId);
-			// })
-		})
+		const eventUrl: string = `https://cors-anywhere.herokuapp.com/https://api.smash.gg/event/${tournamentData.eventId}?expand[]=entrants`; 
+		this.tournamentTeams = await this.getTournamentTeams(eventUrl, tournamentParticipants);
 	}
 
 	parseTournamentData(url: string): ITournamentData {
@@ -67,12 +53,42 @@ export class AppComponent {
 		const eventId: number = parseInt(eventAndPhaseIdArray[0]);
 		const phaseId: number = parseInt(eventAndPhaseIdArray[1]);
 		return { name, eventId, phaseId };
-	}
+	};
 
-	getGroupInfo(groupId: number): void {
-		this.http.get(`https://cors-anywhere.herokuapp.com/https://api.smash.gg/phase_group/${groupId}?expand[]=entrants`)
-		.subscribe((data: any) => {
-			console.log(`group Id is ${groupId} and phaseId is ${data.entities.groups.phaseId}`);
-		})
-	}
+	findParticipantTag(participantId: number, participants: IParticipant[]): string {
+		let foundParticipant: IParticipant = participants.find((participant: IParticipant) => {
+			return participant.id === participantId;
+		});
+		return foundParticipant.tag;
+	};
+
+	async getTournamentParticipants(tournamentUrl: string): Promise<IParticipant[]> {
+		return this.http.get(tournamentUrl)
+		.toPromise()
+		.then((data: any) => {
+			return data.entities.participants.map((participant: any) => {
+				return {
+					id: participant.id,
+					tag: participant.gamerTag
+				};
+			});
+		});
+	};
+
+	async getTournamentTeams(eventUrl: string, tournamentParticipants: IParticipant[]): Promise<ITeam[]> {
+		return this.http.get(eventUrl)
+		.toPromise()
+		.then((data: any) => {
+			return data.entities.entrants.map((entrant: any) => {
+				const player1Tag: string = this.findParticipantTag(entrant.participantIds[0], tournamentParticipants);
+				const player2Tag: string = this.findParticipantTag(entrant.participantIds[1], tournamentParticipants);
+
+				return {
+					name: entrant.name,
+					player1Tag,
+					player2Tag
+				};
+			});
+		});
+	};
 }
