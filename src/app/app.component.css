@@ -42,3 +42,7 @@
     border: 2px solid black;
     border-collapse: collapse;
 }
+
+.full-width {
+    width: 100%;
+}

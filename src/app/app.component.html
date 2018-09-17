@@ -6,6 +6,24 @@
 	<input class="form__input" [ngModel]="tournamentUrl" (ngModelChange)="onTournamentUrlChange($event)">
 	<button class="form__submit-button" (click)="submitUrl()">Test</button>
 </div>
+
+<form>
+	<mat-form-field>
+		<input 
+			matInput 	
+			type="text"
+			placeholder="search word" 
+			[matAutocomplete]="auto"
+			[formControl]="searchTerm"
+		>
+		<mat-autocomplete #auto="matAutocomplete">
+			<mat-option *ngFor="let item of filteredNames | async" [value]="item">
+				{{item}}
+			</mat-option>
+		</mat-autocomplete>
+	</mat-form-field>
+</form>
+
 <div *ngIf="tournamentTeams" class="teams-container">
 	<table class="teams-table">
 		<thead>

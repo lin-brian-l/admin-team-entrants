@@ -1,5 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
+import { FormControl } from "@angular/forms";
+import { Observable } from "rxjs";
+import { startWith, map } from 'rxjs/operators';
 
 interface ITournamentData {
 	name: string,
@@ -23,14 +26,44 @@ interface ITeam {
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 	tournamentUrl: string;
 	tournamentTeams: ITeam[];
+	testNames: string[];
+	searchTerm: FormControl = new FormControl();
+	searchWord: string = "plz work";
+	filteredNames: Observable<string[]>;
 
 	constructor(
 		private http: HttpClient
 	) {
+		console.log(this.searchWord);
 		this.tournamentUrl = "https://smash.gg/admin/tournament/api-testing/seeding/210415/389726";
+		this.testNames = ["test1", "asdf", "fdsa", "bvcx"];
+		// this.searchTerm.valueChanges
+		// .pipe(
+		// 	startWith(""),
+		// 	map()
+		// )
+		// .pipe(debounceTime(500))
+		// .subscribe(data => {
+		// 	console.log("data: " + data);
+		// 	this.testNames = ["test2", "fdsa", "bvcx"];
+		// 	this.searchWord = data;
+		// 	console.log(`searchWord: ${this.searchWord}`)
+		// })
+	}
+
+	ngOnInit() {
+		this.filteredNames = this.searchTerm.valueChanges
+		.pipe(
+			startWith(''),
+			map((value: string) => this.filterNames(value))
+		);
+	}
+
+	filterNames(value: string): string[] {
+		return this.testNames.filter((name: string) => name.includes(value));
 	}
 
 	onTournamentUrlChange(value) {
