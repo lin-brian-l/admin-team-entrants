@@ -62,7 +62,7 @@ export class AppComponent {
 		return foundParticipant.tag;
 	};
 
-	async getTournamentParticipants(tournamentUrl: string): Promise<IParticipant[]> {
+	getTournamentParticipants(tournamentUrl: string): Promise<IParticipant[]> {
 		return this.http.get(tournamentUrl)
 		.toPromise()
 		.then((data: any) => {
@@ -75,7 +75,7 @@ export class AppComponent {
 		});
 	};
 
-	async getTournamentTeams(eventUrl: string, tournamentParticipants: IParticipant[]): Promise<ITeam[]> {
+	getTournamentTeams(eventUrl: string, tournamentParticipants: IParticipant[]): Promise<ITeam[]> {
 		return this.http.get(eventUrl)
 		.toPromise()
 		.then((data: any) => {
