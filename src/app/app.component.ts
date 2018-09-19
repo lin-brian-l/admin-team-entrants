@@ -28,33 +28,29 @@ interface ITeam {
 })
 export class AppComponent implements OnInit {
 	tournamentUrl: string;
+	tournamentParticipants: IParticipant[];
 	tournamentTeams: ITeam[];
 	testNames: string[];
+	test2Names: string[];
 	searchTerm: FormControl = new FormControl();
-	searchWord: string = "plz work";
+	searchWord: string;
 	filteredNames: Observable<string[]>;
+	autoCompleteOption: string = "";
+	autoCompleteOptions: string[] = ["Team", "Player"];
 
 	constructor(
 		private http: HttpClient
 	) {
-		console.log(this.searchWord);
 		this.tournamentUrl = "https://smash.gg/admin/tournament/api-testing/seeding/210415/389726";
 		this.testNames = ["test1", "asdf", "fdsa", "bvcx"];
-		// this.searchTerm.valueChanges
-		// .pipe(
-		// 	startWith(""),
-		// 	map()
-		// )
-		// .pipe(debounceTime(500))
-		// .subscribe(data => {
-		// 	console.log("data: " + data);
-		// 	this.testNames = ["test2", "fdsa", "bvcx"];
-		// 	this.searchWord = data;
-		// 	console.log(`searchWord: ${this.searchWord}`)
-		// })
+		this.test2Names = ["a", "b", "c", "d"];
 	}
 
 	ngOnInit() {
+		this.setFilteredNames();
+	}
+	
+	setFilteredNames() {
 		this.filteredNames = this.searchTerm.valueChanges
 		.pipe(
 			startWith(''),
@@ -63,7 +59,8 @@ export class AppComponent implements OnInit {
 	}
 
 	filterNames(value: string): string[] {
-		return this.testNames.filter((name: string) => name.includes(value));
+		const filteredArray: string[] = this.autoCompleteOption === "Team" ? this.testNames : this.test2Names;
+		return filteredArray.filter((name: string) => name.includes(value));
 	}
 
 	onTournamentUrlChange(value) {
@@ -74,10 +71,10 @@ export class AppComponent implements OnInit {
 		const tournamentData: ITournamentData = this.parseTournamentData(this.tournamentUrl);
 
 		const tournamentUrl: string = `https://cors-anywhere.herokuapp.com/https://api.smash.gg/tournament/${tournamentData.name}?expand[]=participants`;
-		const tournamentParticipants: IParticipant[] = await this.getTournamentParticipants(tournamentUrl);
+		this.tournamentParticipants = await this.getTournamentParticipants(tournamentUrl);
 
 		const eventUrl: string = `https://cors-anywhere.herokuapp.com/https://api.smash.gg/event/${tournamentData.eventId}?expand[]=entrants`; 
-		this.tournamentTeams = await this.getTournamentTeams(eventUrl, tournamentParticipants);
+		this.tournamentTeams = await this.getTournamentTeams(eventUrl, this.tournamentParticipants);
 	}
 
 	parseTournamentData(url: string): ITournamentData {

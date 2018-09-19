@@ -3,28 +3,39 @@
 </div>
 <div class="form">
 	<span>Enter the url of your tournament:</span><br>
-	<input class="form__input" [ngModel]="tournamentUrl" (ngModelChange)="onTournamentUrlChange($event)">
+	<input class="form__input" [(ngModel)]="tournamentUrl">
 	<button class="form__submit-button" (click)="submitUrl()">Test</button>
+
 </div>
 
-<form>
+<div *ngIf="tournamentTeams" class="teams-container">
+	<Label>Filter search by </Label>
+	<select [(ngModel)]="autoCompleteOption" (ngModelChange)="setFilteredNames()">	
+		<option *ngFor="let option of autoCompleteOptions" [value]="option">{{option}} name:</option>
+	</select>
+	
 	<mat-form-field>
 		<input 
 			matInput 	
 			type="text"
 			placeholder="search word" 
-			[matAutocomplete]="auto"
+			[matAutocomplete]="test"
 			[formControl]="searchTerm"
 		>
-		<mat-autocomplete #auto="matAutocomplete">
+		<mat-autocomplete #test="matAutocomplete">
 			<mat-option *ngFor="let item of filteredNames | async" [value]="item">
 				{{item}}
 			</mat-option>
 		</mat-autocomplete>
-	</mat-form-field>
-</form>
 
-<div *ngIf="tournamentTeams" class="teams-container">
+		<!-- <mat-autocomplete #test2="matAutocomplete">
+			<mat-option *ngFor="let item of filteredNames | async" [value]="item">
+				{{item}}
+			</mat-option>
+		</mat-autocomplete>		 -->
+		
+	</mat-form-field>
+
 	<table class="teams-table">
 		<thead>
 			<th class="teams-table__head">Team</th>
