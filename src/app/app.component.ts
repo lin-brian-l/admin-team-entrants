@@ -17,24 +17,21 @@ interface IParticipant {
 
 interface ITeam {
 	name: string,
-	player1Tag: string,
-	player2Tag: string
+	playerTags: string[]
 }
 
 @Component({
 	selector: 'app-root',
 	templateUrl: './app.component.html',
-	styleUrls: ['./app.component.css']
+	styleUrls: ['./app.component.css'],
+
 })
 export class AppComponent implements OnInit {
 	tournamentUrl: string;
 	tournamentParticipants: IParticipant[];
-	tournamentTeams: ITeam[];
-	testNames: string[];
-	test2Names: string[];
-	searchTerm: FormControl = new FormControl();
-	searchWord: string;
-	filteredNames: Observable<string[]>;
+	allTournamentTeams: ITeam[];
+	filteredTeams: Observable<ITeam[]>;
+	filterSearch: FormControl = new FormControl();
 	autoCompleteOption: string = "";
 	autoCompleteOptions: string[] = ["Team", "Player"];
 
@@ -42,39 +39,38 @@ export class AppComponent implements OnInit {
 		private http: HttpClient
 	) {
 		this.tournamentUrl = "https://smash.gg/admin/tournament/api-testing/seeding/210415/389726";
-		this.testNames = ["test1", "asdf", "fdsa", "bvcx"];
-		this.test2Names = ["a", "b", "c", "d"];
 	}
 
 	ngOnInit() {
 		this.setFilteredNames();
 	}
-	
+
 	setFilteredNames() {
-		this.filteredNames = this.searchTerm.valueChanges
+		this.filteredTeams = this.filterSearch.valueChanges
 		.pipe(
 			startWith(''),
-			map((value: string) => this.filterNames(value))
+			map((search: string) => this.filterTeams(search))
 		);
 	}
 
-	filterNames(value: string): string[] {
-		const filteredArray: string[] = this.autoCompleteOption === "Team" ? this.testNames : this.test2Names;
-		return filteredArray.filter((name: string) => name.includes(value));
-	}
-
-	onTournamentUrlChange(value) {
-		this.tournamentUrl = value;
+	filterTeams(search: string): ITeam[] {
+		const lowerCaseSearch = search.toLowerCase();
+		return this.allTournamentTeams.filter((team: ITeam) => { 
+			if (this.autoCompleteOption === "Team") {
+				return team.name.toLowerCase().includes(lowerCaseSearch);
+			} else { // this.autoCompleteOption === "Player"
+				return team.playerTags.find((player: string) => {
+					return player.toLowerCase().includes(lowerCaseSearch);
+				})
+			}
+		});
 	}
 
 	async submitUrl() {
 		const tournamentData: ITournamentData = this.parseTournamentData(this.tournamentUrl);
-
-		const tournamentUrl: string = `https://cors-anywhere.herokuapp.com/https://api.smash.gg/tournament/${tournamentData.name}?expand[]=participants`;
-		this.tournamentParticipants = await this.getTournamentParticipants(tournamentUrl);
-
-		const eventUrl: string = `https://cors-anywhere.herokuapp.com/https://api.smash.gg/event/${tournamentData.eventId}?expand[]=entrants`; 
-		this.tournamentTeams = await this.getTournamentTeams(eventUrl, this.tournamentParticipants);
+		this.tournamentParticipants = await this.getTournamentParticipants(tournamentData.name);
+		this.allTournamentTeams = await this.getTournamentTeams(tournamentData.eventId);
+		this.setFilteredNames();
 	}
 
 	parseTournamentData(url: string): ITournamentData {
@@ -84,15 +80,9 @@ export class AppComponent implements OnInit {
 		const phaseId: number = parseInt(eventAndPhaseIdArray[1]);
 		return { name, eventId, phaseId };
 	};
-
-	findParticipantTag(participantId: number, participants: IParticipant[]): string {
-		let foundParticipant: IParticipant = participants.find((participant: IParticipant) => {
-			return participant.id === participantId;
-		});
-		return foundParticipant.tag;
-	};
-
-	getTournamentParticipants(tournamentUrl: string): Promise<IParticipant[]> {
+	
+	getTournamentParticipants(tournamentName: string): Promise<IParticipant[]> {
+		const tournamentUrl: string = `https://cors-anywhere.herokuapp.com/https://api.smash.gg/tournament/${tournamentName}?expand[]=participants`;
 		return this.http.get(tournamentUrl)
 		.toPromise()
 		.then((data: any) => {
@@ -104,21 +94,29 @@ export class AppComponent implements OnInit {
 			});
 		});
 	};
-
-	getTournamentTeams(eventUrl: string, tournamentParticipants: IParticipant[]): Promise<ITeam[]> {
+	
+	getTournamentTeams(eventId: number): Promise<ITeam[]> {
+		const eventUrl: string = `https://cors-anywhere.herokuapp.com/https://api.smash.gg/event/${eventId}?expand[]=entrants`; 
 		return this.http.get(eventUrl)
 		.toPromise()
 		.then((data: any) => {
 			return data.entities.entrants.map((entrant: any) => {
-				const player1Tag: string = this.findParticipantTag(entrant.participantIds[0], tournamentParticipants);
-				const player2Tag: string = this.findParticipantTag(entrant.participantIds[1], tournamentParticipants);
+				const playerTags: string[] = entrant.participantIds.map((participantId: number) => {
+					return this.findParticipantTag(participantId, this.tournamentParticipants);
+				});
 
 				return {
 					name: entrant.name,
-					player1Tag,
-					player2Tag
+					playerTags
 				};
 			});
 		});
 	};
-}
+
+	findParticipantTag(participantId: number, participants: IParticipant[]): string {
+		let foundParticipant: IParticipant = participants.find((participant: IParticipant) => {
+			return participant.id === participantId;
+		});
+		return foundParticipant.tag;
+	};
+};

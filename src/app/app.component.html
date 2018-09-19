@@ -8,32 +8,19 @@
 
 </div>
 
-<div *ngIf="tournamentTeams" class="teams-container">
+<div *ngIf="allTournamentTeams" class="teams-container">
 	<Label>Filter search by </Label>
-	<select [(ngModel)]="autoCompleteOption" (ngModelChange)="setFilteredNames()">	
+	<select [(ngModel)]="autoCompleteOption">	
 		<option *ngFor="let option of autoCompleteOptions" [value]="option">{{option}} name:</option>
 	</select>
 	
 	<mat-form-field>
 		<input 
-			matInput 	
+			matInput
 			type="text"
 			placeholder="search word" 
-			[matAutocomplete]="test"
-			[formControl]="searchTerm"
-		>
-		<mat-autocomplete #test="matAutocomplete">
-			<mat-option *ngFor="let item of filteredNames | async" [value]="item">
-				{{item}}
-			</mat-option>
-		</mat-autocomplete>
-
-		<!-- <mat-autocomplete #test2="matAutocomplete">
-			<mat-option *ngFor="let item of filteredNames | async" [value]="item">
-				{{item}}
-			</mat-option>
-		</mat-autocomplete>		 -->
-		
+			[formControl]="filterSearch"
+		>		
 	</mat-form-field>
 
 	<table class="teams-table">
@@ -42,9 +29,9 @@
 			<th class="teams-table__head">Players</th>
 		</thead>
 		<tbody class="teams-table__rows">
-			<tr *ngFor="let team of tournamentTeams">
+			<tr *ngFor="let team of filteredTeams | async">
 				<td class="teams-table__cell">{{team.name}}</td>
-				<td class="teams-table__cell">{{team.player1Tag}} & {{team.player2Tag}}</td>
+				<td class="teams-table__cell">{{ team.playerTags | teamPlayers }}</td>
 			</tr>
 		</tbody>
 	</table>

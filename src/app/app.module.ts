@@ -6,10 +6,12 @@ import { HttpClientModule } from "@angular/common/http";
 import { MatAutocompleteModule, MatInputModule } from "@angular/material";
 
 import { AppComponent } from './app.component';
+import { TeamPlayers } from "./team-players.pipe";
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    TeamPlayers
   ],
   imports: [
     BrowserModule,
