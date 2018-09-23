@@ -4,6 +4,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations"
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from "@angular/common/http";
 import { MatAutocompleteModule, MatInputModule } from "@angular/material";
+import { NgxSpinnerModule } from "ngx-spinner";
 
 import { AppComponent } from './app.component';
 import { TeamPlayers } from "./team-players.pipe";
@@ -20,7 +21,8 @@ import { TeamPlayers } from "./team-players.pipe";
     MatInputModule,
     ReactiveFormsModule,
     MatAutocompleteModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    NgxSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]
