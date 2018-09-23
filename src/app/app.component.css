@@ -1,15 +1,21 @@
 .header {
     text-align: center;
-    background-color: red;
+    /* background-color: red; */
 }
 
 .header__text {
-    color: green;
+    /* color: green; */
 }
 
 .form {
-    background-color: blue;
+    /* background-color: blue; */
     text-align: center;
+    width: 65%;
+    margin: auto;
+}
+
+.form__instructions {
+    text-align: left;
 }
 
 .form__input {
@@ -21,12 +27,23 @@
 }
 
 .teams-container {
-    background-color: green;
+    /* background-color: green; */
+}
+
+.autocomplete-container {
+    text-align: center;
+    margin: auto;
+    /* background-color: red; */
+}
+
+.autocomplete-input {
+    margin-left: 10px;
 }
 
 .teams-table {
     margin: auto;
     border: 2px solid black;
+    width: auto;
 }
 
 .teams-table__head {

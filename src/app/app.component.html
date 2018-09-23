@@ -1,27 +1,35 @@
+<ngx-spinner></ngx-spinner>
 <div class="header">
 	<h1 class="header__text">Smash.gg Team-Player Finder</h1>
 </div>
 <div class="form">
-	<span>Enter the url of your tournament:</span><br>
-	<input class="form__input" [(ngModel)]="tournamentUrl">
-	<button class="form__submit-button" (click)="submitUrl()">Test</button>
-
+	<ol class="form__instructions">
+		<li>View your tournament as an admin.</li>
+		<li>Go to the "Pools and Seeding" section of your event.</li>
+		<li>Select a Doubles or Crews event to view.</li>
+		<li>Paste the URL of that page into the form below to generate a list of teams/crews and players in that team/crew.</li>
+	</ol>
+	<!-- <span>Enter the url of your tournament:</span><br> -->
+	<input class="form__input" [(ngModel)]="tournamentUrl" placeholder="ex: https://smash.gg/admin/tournament/api-testing/seeding/210415/389726">
+	<button class="form__submit-button" (click)="submitUrl()">Generate</button>
 </div>
 
 <div *ngIf="allTournamentTeams" class="teams-container">
-	<Label>Filter search by </Label>
-	<select [(ngModel)]="autoCompleteOption">	
-		<option *ngFor="let option of autoCompleteOptions" [value]="option">{{option}} name:</option>
-	</select>
-	
-	<mat-form-field>
-		<input 
-			matInput
-			type="text"
-			placeholder="search word" 
-			[formControl]="filterSearch"
-		>		
-	</mat-form-field>
+	<div class="autocomplete-container">
+		<label>Filter search by </label>
+		<select [(ngModel)]="autoCompleteOption">	
+			<option *ngFor="let option of autoCompleteOptions" [value]="option">{{option}} name:</option>
+		</select>
+		
+		<mat-form-field class="autocomplete-input">
+			<input 
+				matInput
+				type="text"
+				placeholder="search word" 
+				[formControl]="filterSearch"
+			>		
+		</mat-form-field>
+	</div>
 
 	<table class="teams-table">
 		<thead>

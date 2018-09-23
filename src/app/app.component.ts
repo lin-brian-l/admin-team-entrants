@@ -3,6 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { FormControl } from "@angular/forms";
 import { Observable } from "rxjs";
 import { startWith, map } from 'rxjs/operators';
+import { NgxSpinnerService } from "ngx-spinner";
 
 interface ITournamentData {
 	name: string,
@@ -36,9 +37,11 @@ export class AppComponent implements OnInit {
 	autoCompleteOptions: string[] = ["Team", "Player"];
 
 	constructor(
-		private http: HttpClient
+		private http: HttpClient,
+		private spinnerService: NgxSpinnerService
 	) {
-		this.tournamentUrl = "https://smash.gg/admin/tournament/api-testing/seeding/210415/389726";
+		this.tournamentUrl = "";
+		// this.tournamentUrl = "https://smash.gg/admin/tournament/api-testing/seeding/210415/389726";
 	}
 
 	ngOnInit() {
@@ -67,10 +70,12 @@ export class AppComponent implements OnInit {
 	}
 
 	async submitUrl() {
+		this.spinnerService.show();
 		const tournamentData: ITournamentData = this.parseTournamentData(this.tournamentUrl);
 		this.tournamentParticipants = await this.getTournamentParticipants(tournamentData.name);
 		this.allTournamentTeams = await this.getTournamentTeams(tournamentData.eventId);
 		this.setFilteredNames();
+		this.spinnerService.hide();
 	}
 
 	parseTournamentData(url: string): ITournamentData {
@@ -109,7 +114,11 @@ export class AppComponent implements OnInit {
 					name: entrant.name,
 					playerTags
 				};
-			});
+			}).sort((teamA: ITeam, teamB: ITeam) => {
+				if (teamA.name < teamB.name) return -1;
+				if (teamA.name > teamB.name) return 1;
+				return 0;
+			})
 		});
 	};
 
