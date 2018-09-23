@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "angular-project": {
+    "admin-team-entrants": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/angular-project",
+            "outputPath": "dist/admin-team-entrants",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -50,18 +50,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "angular-project:build"
+            "browserTarget": "admin-team-entrants:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "angular-project:build:production"
+              "browserTarget": "admin-team-entrants:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "angular-project:build"
+            "browserTarget": "admin-team-entrants:build"
           }
         },
         "test": {
@@ -95,7 +95,7 @@
         }
       }
     },
-    "angular-project-e2e": {
+    "admin-team-entrants-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "targets": {
@@ -103,11 +103,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "angular-project:serve"
+            "devServerTarget": "admin-team-entrants:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "angular-project:serve:production"
+              "devServerTarget": "admin-team-entrants:serve:production"
             }
           }
         },
@@ -123,5 +123,5 @@
       }
     }
   },
-  "defaultProject": "angular-project"
+  "defaultProject": "admin-team-entrants"
 }
