@@ -1,6 +1,5 @@
 .header {
     text-align: center;
-    /* background-color: red; */
 }
 
 .header__text {
@@ -8,7 +7,6 @@
 }
 
 .form {
-    /* background-color: blue; */
     text-align: center;
     width: 65%;
     margin: auto;
@@ -33,7 +31,6 @@
 .autocomplete-container {
     text-align: center;
     margin: auto;
-    /* background-color: red; */
 }
 
 .autocomplete-input {
